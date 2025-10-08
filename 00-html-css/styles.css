@@ -322,3 +322,113 @@ footer small {
   color: var(--text-muted);
   font-size: 0.875rem;
 }
+
+
+
+/* --- TU CSS ORIGINAL --- */
+/* (Todo el contenido que me pasaste se mantiene igual arriba) */
+
+/* --- A PARTIR DE AQUÍ: AJUSTES RESPONSIVE --- */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .navbar {
+    flex-basis: 100%;
+    justify-content: center;
+    order: 3;
+  }
+
+  .header-left, .header-right {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  form {
+    max-width: 90%;
+  }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-left {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .site-title {
+    font-size: 1.5rem;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-right {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  main > section:nth-child(1) {
+    height: auto;
+    padding: 4rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    max-width: 20rem;
+  }
+
+  form > div {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  form button[type="submit"] {
+    width: 100%;
+  }
+
+  main > section:nth-child(2) header p {
+    font-size: 1rem;
+  }
+
+  article {
+    padding: 1.25rem;
+  }
+
+  footer small {
+    font-size: 0.8rem;
+  }
+}
+
