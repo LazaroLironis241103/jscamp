@@ -1,0 +1,309 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #0d5ba8;         /* color principal de botones (azul celeste) */
+  --primary-hover: #083a6f;   /* color de hover más oscuro */
+  --background: #0a1520;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.06);
+  --card-bg: #0b1622;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --input-bg: #111827;
+  --upload-bg: rgba(13,91,168,0.14); /* fondo claro para Subir CV */
+  --upload-color: #0d5ba8;           /* texto / icono del botón Subir CV */
+  --upload-border: rgba(13,91,168,0.18);
+}
+
+/* BODY */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  padding-bottom: 3rem;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* HEADER LEFT */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo svg {
+  width: 40px;
+  height: 40px;
+  color: var(--primary-hover);
+  display: block;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: 0.5rem;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.18s ease;
+}
+
+.navbar a:hover,
+.navbar a:focus {
+  color: var(--primary-hover);
+  outline: none;
+}
+
+/* HEADER RIGHT */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.45rem;
+  background-color: var(--upload-bg);
+  color: var(--upload-color);
+  border: 1px solid var(--upload-border);
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.upload-btn:hover {
+  background-color: rgba(13,91,168,0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* SEARCH FORM */
+.search-form {
+  padding-inline: 0.5rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--input-bg);
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 14px -6px var(--shadow);
+  padding: 0.25rem 0.5rem;
+  gap: 0.5rem;
+  min-width: 220px;
+}
+
+.search-box input[type="text"] {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.95rem;
+}
+
+.search-box input::placeholder {
+  color: #64748b;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  font-size: 0.9rem;
+  margin: 2rem auto 1rem;
+  max-width: 880px;
+  padding: 0 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.breadcrumb .breadcrumb-item {
+  color: var(--text-muted);
+}
+
+.breadcrumb .breadcrumb-current {
+  color: var(--text-primary);
+  text-shadow: 0 1px 6px rgba(255,255,255,0.04);
+  font-weight: 600;
+}
+
+/* JOB POSTING CARD */
+.job-posting {
+  background-color: var(--card-bg);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 10px 20px -8px var(--shadow);
+  margin: 0 auto 3rem;
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* JOB HEADER */
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.job-header h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.15rem;
+  color: var(--text-primary);
+  text-shadow: 0 2px 8px rgba(255,255,255,0.04);
+  line-height: 1.1;
+}
+
+.company-location {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* APPLY BUTTON (ahora primario = azul celeste) */
+.btn-apply {
+  background-color: var(--primary);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+  box-shadow: 0 6px 14px rgba(11,21,34,0.25);
+}
+
+.btn-apply:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+/* SECTION TITLES - aumentados */
+.job-description h3,
+.job-responsibilities h3,
+.job-requirements h3,
+.company-info h3 {
+  font-size: 1.35rem; /* aumentado */
+  margin-bottom: 0.6rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-shadow: 0 1px 6px rgba(255,255,255,0.03);
+}
+
+/* TEXT BLOCKS */
+.job-description p,
+.company-info p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* LISTS */
+.job-responsibilities ul,
+.job-requirements ul {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Cada li con SVG inline alineado */
+.job-responsibilities li,
+.job-requirements li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.985rem;
+}
+
+/* Asegura que el SVG herede color y se alinee con el texto */
+.job-responsibilities li svg,
+.job-requirements li svg {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  color: var(--primary);
+  stroke: currentColor;
+  fill: none;
+  display: block;
+}
+
+/* JOB FOOTER */
+.job-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  .job-posting {
+    padding: 1.25rem;
+    margin: 1rem;
+  }
+
+  .job-header {
+    gap: 0.5rem;
+  }
+
+  .btn-apply {
+    width: 100%;
+  }
+
+  .breadcrumb {
+    font-size: 0.88rem;
+    margin-top: 1rem;
+  }
+}
