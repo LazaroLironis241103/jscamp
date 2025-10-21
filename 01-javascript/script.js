@@ -2,17 +2,53 @@
 document.addEventListener('DOMContentLoaded', () => {
   const jobsListingSection = document.querySelector('.jobs-listings');
   const jobsArticles = Array.from(jobsListingSection?.querySelectorAll('article') || []);
+  const inputBuscador = document.getElementById('buscador');
+  const selectExperience = document.getElementById('experience-level');
   const selectTech = document.getElementById('filter-technology');
   const selectLocation = document.getElementById('location');
   const selectContract = document.getElementById('contract-type');
-  const selectExperience = document.getElementById('experience-level');
+  const contador = document.getElementById('contador');
 
-  // Util: normaliza cadena para búsqueda (quita mayúsculas y diacríticos)
-  const normalize = (str = '') =>
-    String(str).normalize?.('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase() || String(str).toLowerCase();
+  // Normaliza cadenas: quita diacríticos, trim y pasa a minúsculas
+  function normalize(str = '') {
+    return String(str)
+      .normalize?.('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .trim()
+      .toLowerCase() || String(str).toLowerCase().trim();
+  }
 
-  // Muestra mensaje cuando no hay resultados
+  // Extrae y normaliza metadatos desde un article (usa dataset si existe, si no fallback a texto)
+  function metaFromArticle(article) {
+    const titleRaw = article.querySelector('.job-header h3')?.textContent || article.querySelector('h3')?.textContent || '';
+    const companyLineRaw = article.querySelector('h6')?.textContent || '';
+    const descriptionRaw = article.querySelector('p')?.textContent || '';
+
+    const technologyRaw = article.dataset.technology || ''; // ejemplo: "javascript,react,nodejs"
+    const locationRaw = article.dataset.location || ''; // ejemplo: "remoto"
+    const contractRaw = article.dataset.contract || ''; // ejemplo: "tiempo-completo"
+    const experienceRaw = article.dataset.experience || article.dataset.nivel || ''; // ejemplo: "junior"
+
+    return {
+      title: normalize(titleRaw),
+      companyLine: normalize(companyLineRaw),
+      description: normalize(descriptionRaw),
+      technologyRaw: normalize(technologyRaw),
+      locationRaw: normalize(locationRaw),
+      contractRaw: normalize(contractRaw),
+      experienceRaw: normalize(experienceRaw)
+    };
+  }
+
+  // Convierte data-technology (csv) a array normalizado
+  function techsFromMeta(metaTechnology) {
+    if (!metaTechnology) return [];
+    return metaTechnology.split(',').map(t => normalize(t)).filter(Boolean);
+  }
+
+  // Mostrar/ocultar mensaje cuando no hay resultados
   function showNoResults(show) {
+    if (!jobsListingSection) return;
     let msg = jobsListingSection.querySelector('.no-results');
     if (show) {
       if (!msg) {
@@ -28,49 +64,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Obtiene metadatos del artículo (lee data-* si existen)
-  function metaFromArticle(article) {
-    const title = article.querySelector('.job-header h3')?.textContent.trim() || '';
-    const companyLine = article.querySelector('h6')?.textContent.trim() || '';
-    const description = article.querySelector('p')?.textContent.trim() || '';
-    const technology = (article.dataset.technology || '').trim();
-    const location = (article.dataset.location || '').trim();
-    const contract = (article.dataset.contract || '').trim();
-    const experience = (article.dataset.experience || '').trim();
-    return { title, companyLine, description, technology, location, contract, experience };
-  }
-
-  // Aplica los filtros a los artículos y actualiza visibilidad
+  // Función central de filtrado (combina buscador, nivel, tecnología, ubicación y contrato)
   function applyFilters() {
-    const qTech = (selectTech?.value || '').toLowerCase();
-    const qLoc = (selectLocation?.value || '').toLowerCase();
-    const qContract = (selectContract?.value || '').toLowerCase();
-    const qExp = (selectExperience?.value || '').toLowerCase();
+    const qTitle = normalize(inputBuscador?.value || '');
+    const qExp = normalize(selectExperience?.value || '');
+    const qLoc = normalize(selectLocation?.value || '');
+    const qContract = normalize(selectContract?.value || '');
+    const qTech = normalize(selectTech?.value || '');
 
     let visibleCount = 0;
 
     jobsArticles.forEach(article => {
       const meta = metaFromArticle(article);
 
-      // Si hay data-* y no vacío, prioriza comparación exacta con select
-      const matchTech = !qTech || (meta.technology && meta.technology.toLowerCase() === qTech) ||
-        (!meta.technology && (meta.title + ' ' + meta.description + ' ' + meta.companyLine).toLowerCase().includes(qTech));
+      // Título
+      const matchTitle = !qTitle || meta.title.includes(qTitle);
 
-      const matchLoc = !qLoc || (meta.location && meta.location.toLowerCase() === qLoc) ||
-        (!meta.location && (meta.companyLine + ' ' + meta.description).toLowerCase().includes(qLoc));
+      // Experiencia: data exacta o fallback a búsqueda en texto
+      const matchExp = !qExp ||
+        (meta.experienceRaw && meta.experienceRaw === qExp) ||
+        (!meta.experienceRaw && (meta.description + ' ' + meta.title + ' ' + meta.companyLine).includes(qExp));
 
-      const matchContract = !qContract || (meta.contract && meta.contract.toLowerCase() === qContract) ||
-        (!meta.contract && (meta.description + ' ' + meta.title).toLowerCase().includes(qContract));
+      // Ubicación: data exacta o fallback en companyLine/description
+      const matchLoc = !qLoc ||
+        (meta.locationRaw && meta.locationRaw === qLoc) ||
+        (!meta.locationRaw && (meta.companyLine + ' ' + meta.description).includes(qLoc));
 
-      const matchExp = !qExp || (meta.experience && meta.experience.toLowerCase() === qExp) ||
-        (!meta.experience && (meta.description + ' ' + meta.title).toLowerCase().includes(qExp));
+      // Contrato: data exacta o fallback en texto
+      const matchContract = !qContract ||
+        (meta.contractRaw && meta.contractRaw === qContract) ||
+        (!meta.contractRaw && (meta.description + ' ' + meta.title).includes(qContract));
 
-      const visible = matchTech && matchLoc && matchContract && matchExp;
+      // Tecnología: si hay data-technology se compara en array; si no fallback a texto
+      const articleTechs = techsFromMeta(meta.technologyRaw);
+      const matchTech = !qTech ||
+        (articleTechs.length && articleTechs.includes(qTech)) ||
+        (!articleTechs.length && (meta.description + ' ' + meta.title + ' ' + meta.companyLine).includes(qTech));
+
+      const visible = matchTitle && matchExp && matchLoc && matchContract && matchTech;
 
       article.style.display = visible ? '' : 'none';
       if (visible) visibleCount++;
     });
 
+    if (contador) contador.textContent = `Mostrando ${visibleCount} de ${jobsArticles.length} ofertas`;
     showNoResults(visibleCount === 0);
   }
 
@@ -79,21 +116,80 @@ document.addEventListener('DOMContentLoaded', () => {
     jobsListingSection.addEventListener('click', (event) => {
       const btn = event.target.closest('.button-apply-job');
       if (!btn) return;
-      // comportamiento original: marcar aplicado
       btn.textContent = '¡Aplicado!';
       btn.classList.add('is-applied');
       btn.disabled = true;
     });
-  } else {
-    console.warn('No se encontró .jobs-listings en el DOM');
   }
 
-  // Conectar selects a la función de filtrado
-  [selectTech, selectLocation, selectContract, selectExperience].forEach(sel => {
-    if (!sel) return;
-    sel.addEventListener('change', applyFilters);
-  });
+  // Conectar listeners (input/change) a applyFilters
+  if (inputBuscador) inputBuscador.addEventListener('input', applyFilters);
+  if (selectExperience) selectExperience.addEventListener('change', applyFilters);
+  if (selectTech) selectTech.addEventListener('change', applyFilters);
+  if (selectLocation) selectLocation.addEventListener('change', applyFilters);
+  if (selectContract) selectContract.addEventListener('change', applyFilters);
 
-  // Si quieres aplicar filtros en load (por ejemplo, si hay valores por defecto)
+  // Aplicar filtros inicialmente
   applyFilters();
 });
+
+// Paginación dinámica
+const RESULTS_PER_PAGE = 3;
+let currentPage = 1;
+const jobsArticles = Array.from(document.querySelectorAll('.jobs-listings article'));
+const paginationContainer = document.querySelector('.pagination');
+
+// Funcion para mostrar ofertas según la página actual
+function mostrarOfertasPorPagina() {
+  const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+  const endIndex = startIndex + RESULTS_PER_PAGE;
+
+  jobsArticles.forEach((job, index) => {
+    job.style.display = (index >= startIndex && index < endIndex) ? '' : 'none';
+  })
+}
+
+// Función para crear botones de paginación
+function generarPaginacion() {
+  const totalPages = Math.ceil(jobsArticles.length / RESULTS_PER_PAGE);
+  paginationContainer.innerHTML = '';
+
+  // Añadir botone "Anterior" "
+  const prevButton = document.createElement('button');
+  prevButton.textContent = 'Anterior';
+  prevButton.className = 'page-btn';
+  prevButton.disabled = currentPage === 1;
+  prevButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      mostrarOfertasPorPagina();
+      generarPaginacion();
+    }
+  }) 
+  paginationContainer.appendChild(prevButton);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const button = document.createElement('button');
+    button.textContent = i;
+    button.className = 'page-btn';
+    if ( i === currentPage) button.classList.add('active');
+    paginationContainer.appendChild(button);
+  }
+
+  // Añadir botón "Siguiente"
+  const nextButton = document.createElement('button');
+  nextButton.textContent = 'Siguiente';
+  nextButton.className = 'page-btn';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      mostrarOfertasPorPagina();
+      generarPaginacion();
+    }
+  })
+   paginationContainer.appendChild(nextButton);
+}
+
+mostrarOfertasPorPagina();
+generarPaginacion();

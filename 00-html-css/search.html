@@ -49,7 +49,8 @@
             <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
             <path d="M21 21l-6 -6" />
           </svg>
-          <input required type="text" placeholder="Buscar trabajos, empresas o habilidades">
+          <input required type="text" id="buscador" placeholder="Buscar trabajos, empresas o habilidades">
+          <div id="contador"></div>
         </div>
 
         <div class="search-filters">
@@ -89,11 +90,11 @@
       </form>
     </section>
 
-    <!-- 🆕 jobs-listings contenedor -->
+    <!-- 🆕 jobs-listings contenedor (con data-attributes añadidos) -->
     <section class="jobs-listings">
       <h2>Resultado de búsqueda</h2>
 
-      <article>
+      <article data-technology="javascript,react,nodejs" data-location="remoto" data-contract="tiempo-completo" data-nivel="mid">
         <div class="job-header">
           <h3>Ingeniero de Software</h3>
           <button class="button-apply-job">Aplicar</button>
@@ -102,7 +103,7 @@
         <p>Buscamos un ingeniero de software con experiencia en desarrollo web y conocimientos en JavaScript, React y Node.js. El candidato ideal debe ser capaz de trabajar en equipo y tener buenas habilidades de comunicación.</p>
       </article>
 
-      <article>
+      <article data-technology="python,sql" data-location="bsas" data-contract="tiempo-completo" data-nivel="mid">
         <div class="job-header">
           <h3>Analista de Datos</h3>
           <button class="button-apply-job">Aplicar</button>
@@ -111,7 +112,7 @@
         <p>Estamos buscando un analista de datos con experiencia en el manejo de grandes conjuntos de datos y herramientas de visualización. Se requiere conocimiento en SQL, Python y R.</p>
       </article>
 
-      <article>
+      <article data-technology="swift,kotlin" data-location="cordoba" data-contract="tiempo-completo" data-nivel="mid">
         <div class="job-header">
           <h3>Desarrollador de Aplicaciones Móviles</h3>
           <button class="button-apply-job">Aplicar</button>
@@ -120,7 +121,7 @@
         <p>Buscamos un desarrollador de aplicaciones móviles con experiencia en iOS y/o Android. El candidato debe tener conocimientos en Swift, Kotlin y el desarrollo de interfaces de usuario.</p>
       </article>
 
-      <article>
+      <article data-technology="aws,azure,gcp" data-location="remoto" data-contract="tiempo-completo" data-nivel="senior">
         <div class="job-header">
           <h3>Ingeniero de DevOps</h3>
           <button class="button-apply-job">Aplicar</button>
@@ -131,13 +132,7 @@
     </section>
 
     <div class="pagination">
-      <button class="page-btn prev">&lt;</button>
-      <button class="page-btn">1</button>
-      <button class="page-btn">2</button>
-      <button class="page-btn active">3</button>
-      <button class="page-btn">4</button>
-      <button class="page-btn">5</button>
-      <button class="page-btn next">&gt;</button>
+      
     </div>
   </main>
 </body>
