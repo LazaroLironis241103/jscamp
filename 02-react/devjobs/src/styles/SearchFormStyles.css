@@ -1,0 +1,390 @@
+/* src/styles/SearchFormsStyles.css */
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* VARIABLES */
+:root {
+  --primary: #3b4550;
+  --primary-hover: #0d5ba8;
+  --background: #0a1520;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+  --card-bg: #1e293b;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --input-bg: #0f1720;
+  --gap: 1rem;
+}
+
+/* BODY */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* MAIN LAYOUT */
+main {
+  padding: 2rem 1rem;
+}
+
+/* HERO / SEARCH WRAPPER */
+.jobs-search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+}
+
+.jobs-search h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.jobs-search p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+/* SEARCH BAR */
+.search-bar {
+  background: var(--input-bg);
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 18px -6px var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0.5rem 0 0;
+  box-sizing: border-box;
+}
+
+.search-bar svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  padding: 0.75rem 0.5rem;
+  font-size: 1.05rem;
+  min-width: 120px;
+}
+
+.search-bar input::placeholder {
+  color: #64748b;
+}
+
+/* SEARCH FILTERS */
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 0.75rem;
+  justify-content: flex-start;
+}
+
+.search-filters select {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  min-width: 10rem;
+}
+
+.search-filters select:hover,
+.search-filters select:focus {
+  background-color: #263244;
+  outline: none;
+}
+
+/* SUBMIT BUTTON */
+form > button[type="submit"] {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--primary-hover);
+  color: white;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+form > button[type="submit"]:hover {
+  background: var(--primary);
+}
+
+/* RESULTS */
+.jobs-listings {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.jobs-listings h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* JOB CARD */
+.job-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px -1px rgba(0,0,0,0.6);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.job-header h3 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.button-apply-job {
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.45rem;
+  background-color: var(--primary-hover);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.job-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.job-description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.page-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  background: transparent;
+  color: #cfcfcf;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+}
+
+.page-btn.active {
+  background: var(--primary-hover);
+  color: white;
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .search-filters select {
+    min-width: 9rem;
+  }
+
+  .jobs-search h1 {
+    font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+    width: 95%;
+  }
+  .search-filters {
+    width: 95%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-filters select {
+    width: 100%;
+  }
+  .job-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .jobs-listings {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .jobs-search h1 {
+    font-size: 1.4rem;
+  }
+  .search-bar input {
+    font-size: 0.95rem;
+  }
+}
+
+/* Layout global para main y secciones */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;          /* centra todo el contenido */
+  padding: 2rem 1rem;      /* espacio alrededor del contenido */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;               /* separación uniforme entre SearchForm, JobListings y Pagination */
+}
+
+/* Ajustes para header y footer para no pegarse al layout */
+header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+}
+
+footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+/* Pequeño ajuste para evitar que h1 del hero suba demasiado */
+.jobs-search h1 {
+  margin-top: 0;
+}
+
+/* Mejor separación entre resultados y paginación */
+.jobs-listings {
+  display: block;
+}
+
+/* Cuando no hay resultados, mostrar con padding coherente */
+.job-empty {
+  padding: 1rem;
+  color: var(--text-muted);
+}
+
+/* Responsive: reducimos el gap en pantallas pequeñas */
+@media (max-width: 768px) {
+  .layout {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  header,
+  footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* --- PARCHE: corregir solapamientos y márgenes negativos --- */
+main > section:first-child {
+  height: auto;              /* evitar alturas fijas que solapan */
+  padding: 3rem 1rem 1.5rem; /* espaciado superior e inferior */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+main > section:first-child h1 {
+  margin: 0 0 0.75rem 0;     /* quitar margen negativo */
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+.jobs-listings {
+  margin-top: 1.5rem;        /* separación clara desde el hero */
+  padding: 0 1rem;
+}
+
+/* Evitar márgenes negativos en h2 globales */
+.jobs-listings h2,
+main h2 {
+  margin: 0 0 1rem 0;
+  padding-left: 0;
+  text-align: left;
+}
+
+/* Cards: márgenes y anchuras coherentes */
+article,
+.job-card {
+  margin: 0 0 1rem 0;
+  padding: 1.25rem;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+/* Contenedor layout garantizado */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Prioridad: sobreescribimos reglas globales conflictivas */
+.jobs-search .search-bar,
+.search-filters {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0.5rem auto;
+}
+
+/* Responsive: pequeños ajustes */
+@media (max-width: 768px) {
+  .jobs-search {
+    padding: 1rem 0;
+  }
+
+  main > section:first-child h1 {
+    font-size: 1.6rem;
+  }
+}

@@ -1,54 +1,88 @@
-import Header from './components/Header'
-import Footer from './components/Footer'
-import JobCard from './components/JobCard'
+// src/App.jsx
+import { useState } from 'react'
+import './styles/SearchFormStyles.css' // Asegurate que el archivo exista en src/styles/
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { SearchForm } from './components/SearchForm'
+import { JobListings } from './components/JobListings'
+import { Pagination } from './components/Pagination'
+import jobsData from './data/jobs.json'
+
+const RESULTS_PER_PAGE = 5
 
 function App() {
- const jobs = [
-  {
-    id: 1,
-    title: 'Frontend Developer',
-    company: 'TechCorp',
-    location: 'Madrid, España',
-    salary: '45,000 - 60,000 EUR',
-    description: 'Estamos buscando un desarrollador frontend con experiencia en React',
-    tags: ['React', 'TypeScript', 'CSS']
-  },
-  {
-    id: 2,
-    title: 'Backend Developer',
-    company: 'DataStack',
-    location: 'Barcelona, España',
-    salary: '50,000 - 70,000 EUR',
-    description: 'Desarrollador backend para trabajar con Node,js y base de datos',
-    tags: ['Node,js', 'PostgreSQL', 'API']
-  },
-  {
-      id: 3,
-      title: 'Full Stack Developer',
-      company: 'StartupX',
-      location: 'Valencia, España',
-      salary: '€40,000 - €55,000',
-      description: 'Buscan un desarrollador salvavidas que pueda hacer de todo.',
-      tags: ['React', 'Node.js', 'MongoDB'],
-    },
- ]
+  const [filters, setFilters] = useState({
+    technology: '',
+    location: '',
+    experienceLevel: '',
+  })
 
- return (
-  <div className='app'>
-    <Header />
-    <main>
-      <h1>Trabajos Disponibles</h1>
-    <section className='jobs-container'>
-      <div className='jobs-grid'>
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} />
-        ))}
-      </div>
-    </section>
-    </main>
-    <Footer />
-  </div>
- )
+  const [textToFilter, setTextToFilter] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handleSearch = (newFilters) => {
+    setFilters({
+      technology: newFilters.technology,
+      location: newFilters.location,
+      experienceLevel: newFilters.experienceLevel,
+    })
+    setTextToFilter(newFilters.search)
+    setCurrentPage(1)
+  }
+
+  const handleChangeText = (text) => {
+    setTextToFilter(text)
+    setCurrentPage(1)
+  }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+  }
+
+  // Filtrar por selects
+  const jobsFilteredByFilters = jobsData.filter((job) => {
+    return (
+      (filters.technology === '' || job.data.technology === filters.technology) &&
+      (filters.location === '' || job.data.modalidad === filters.location) &&
+      (filters.experienceLevel === '' || job.data.nivel === filters.experienceLevel)
+    )
+  })
+
+  // Filtrar por texto
+  const jobsWithTextFilter =
+    textToFilter === ''
+      ? jobsFilteredByFilters
+      : jobsFilteredByFilters.filter((job) =>
+          job.titulo.toLowerCase().includes(textToFilter.toLowerCase())
+        )
+
+  // Paginación
+  const totalPages = Math.ceil(jobsWithTextFilter.length / RESULTS_PER_PAGE)
+
+  const pagedResults = jobsWithTextFilter.slice(
+    (currentPage - 1) * RESULTS_PER_PAGE,
+    currentPage * RESULTS_PER_PAGE
+  )
+
+  return (
+    <>
+      <Header />
+      <main className="layout">
+        <section>
+          <SearchForm onSearch={handleSearch} onChangeText={handleChangeText} />
+        </section>
+
+        <JobListings jobs={pagedResults} />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </main>
+      <Footer />
+    </>
+  )
 }
 
 export default App

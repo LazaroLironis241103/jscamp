@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "titulo": "Desarrollador Frontend React",
+    "descripcion": "Buscamos desarrollador con experiencia en React.",
+    "data": {
+      "technology": "react",
+      "modalidad": "remoto",
+      "nivel": "junior"
+    }
+  },
+  {
+    "id": 2,
+    "titulo": "Backend Node.js",
+    "descripcion": "Empresa busca desarrollador backend con Node.js.",
+    "data": {
+      "technology": "node",
+      "modalidad": "cdmx",
+      "nivel": "mid"
+    }
+  },
+  {
+    "id": 3,
+    "titulo": "Fullstack Developer",
+    "descripcion": "Se requiere experiencia en frontend y backend.",
+    "data": {
+      "technology": "javascript",
+      "modalidad": "guadalajara",
+      "nivel": "senior"
+    }
+  }
+]

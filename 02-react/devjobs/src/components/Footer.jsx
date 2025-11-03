@@ -1,9 +1,10 @@
-function Footer() {
+// src/components/Footer.jsx
+export function Footer() {
   return (
-    <footer className="site-footer">
-      <p>&copy; 2025 DevJobs. Todos los derechos reservados.</p>
+    <footer>
+      <div className="footer-content">
+        <p>© {new Date().getFullYear()} DevJobs. Todos los derechos reservados.</p>
+      </div>
     </footer>
   )
 }
-
-export default Footer
