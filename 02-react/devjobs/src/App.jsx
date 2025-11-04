@@ -1,6 +1,5 @@
 // src/App.jsx
 import { useState } from 'react'
-import './styles/SearchFormStyles.css' // Asegurate que el archivo exista en src/styles/
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { SearchForm } from './components/SearchForm'
@@ -39,14 +38,19 @@ function App() {
     setCurrentPage(page)
   }
 
-  // Filtrar por selects
   const jobsFilteredByFilters = jobsData.filter((job) => {
-    return (
-      (filters.technology === '' || job.data.technology === filters.technology) &&
-      (filters.location === '' || job.data.modalidad === filters.location) &&
-      (filters.experienceLevel === '' || job.data.nivel === filters.experienceLevel)
-    )
-  })
+  // normalizamos valores a minúsculas para comparar
+  const jobTechString = (job.data?.technology || job.data?.tecnologias || '').toString().toLowerCase()
+  const jobMode = (job.data?.modalidad || job.data?.location || '').toString().toLowerCase()
+  const jobNivel = (job.data?.nivel || '').toString().toLowerCase()
+
+  const techMatch = !filters.technology || jobTechString.split(',').map(s => s.trim()).includes(filters.technology.toLowerCase())
+  const locationMatch = !filters.location || jobMode.includes(filters.location.toLowerCase())
+  const nivelMatch = !filters.experienceLevel || jobNivel.includes(filters.experienceLevel.toLowerCase())
+
+  return techMatch && locationMatch && nivelMatch
+})
+
 
   // Filtrar por texto
   const jobsWithTextFilter =
@@ -57,7 +61,7 @@ function App() {
         )
 
   // Paginación
-  const totalPages = Math.ceil(jobsWithTextFilter.length / RESULTS_PER_PAGE)
+  const totalPages = Math.max(1, Math.ceil(jobsWithTextFilter.length / RESULTS_PER_PAGE))
 
   const pagedResults = jobsWithTextFilter.slice(
     (currentPage - 1) * RESULTS_PER_PAGE,

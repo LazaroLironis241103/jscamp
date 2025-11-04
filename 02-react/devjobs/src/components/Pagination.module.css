@@ -1,34 +1,62 @@
-/* src/components/Pagination.module.css */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-block: 2rem;
-}
+/* Pagination.module.css */
 
-.link {
+.pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  text-decoration: none;
-  color: var(--text-muted);
-  border-radius: 0.375rem;
-  transition: all 0.3s;
+  gap: 0.6rem;
+  margin: 1.5rem 0 3rem;
+  flex-wrap: wrap;
 }
 
-.link:hover,
-.link:focus {
-  background-color: #fff;
+.pagesWrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.link:active {
-  transform: scale(0.9);
+/* base button */
+.pageBtn {
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  background: transparent;
+  color: #cfcfcf;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  transition: background-color 0.14s, color 0.14s, transform 0.06s;
 }
 
-.isActive {
-  background-color: var(--primary-light);
-  color: white;
-  pointer-events: none;
+/* hover */
+.pageBtn:not(:disabled):hover {
+  background: rgba(255,255,255,0.04);
+  transform: translateY(-1px);
+}
+
+/* focus */
+.pageBtn:focus {
+  outline: 3px solid rgba(11,132,255,0.15);
+  outline-offset: 2px;
+}
+
+/* active/current page */
+.active {
+  background: #0d5ba8; /* var(--primary-hover) */
+  color: #fff;
+  border-color: rgba(255,255,255,0.06);
+  cursor: default;
+}
+
+/* disabled */
+.pageBtn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* smaller prev/next */
+.pageBtn:first-child,
+.pageBtn:last-child {
+  padding: 0.35rem 0.6rem;
+  font-weight: 700;
 }
