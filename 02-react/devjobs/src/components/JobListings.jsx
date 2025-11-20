@@ -2,53 +2,84 @@
 import React, { useState } from 'react'
 
 export function JobListings({ jobs = [] }) {
-  if (!jobs || jobs.length === 0) {
-    return <div className="job-empty">No se encontraron resultados</div>
+  if (!Array.isArray(jobs) || jobs.length === 0) {
+    return (
+      <section aria-live="polite" className="job-empty">
+        <p>No se encontraron resultados</p>
+      </section>
+    )
   }
 
   return (
-    <section className="jobs-listings" aria-live="polite">
+    <section className="jobs-listings" aria-label="Resultado de búsqueda">
       <h2>Resultado de búsqueda</h2>
-      {jobs.map((job) => (
-        <JobCard key={job.id || job.titulo} job={job} />
-      ))}
+      <ul className="jobs-list" role="list">
+        {jobs.map((job, index) => (
+          <li key={stableKey(job, index)} role="listitem">
+            <JobCard job={job} />
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }
 
+function stableKey(job, index) {
+  // Prefiere id, luego combinación título+empresa, finalmente índice
+  if (job?.id) return String(job.id)
+  if (job?.titulo || job?.title) {
+    const t = (job.titulo || job.title).toString().slice(0, 40).replace(/\s+/g, '-').toLowerCase()
+    const c = (job.empresa || job.company || '').toString().slice(0, 20).replace(/\s+/g, '-').toLowerCase()
+    return `${t}-${c}` || `job-${index}`
+  }
+  return `job-${index}`
+}
+
 function JobCard({ job }) {
-  // Estado local para "aplicado"
   const [applied, setApplied] = useState(false)
 
-  // Datos según tu jobs.json. Ajusta si los nombres difieren.
-  const title = job.titulo || job.title || 'Oferta';
-  const companyLine = job.empresa || job.company || `${job.data?.empresa || ''} | ${job.data?.modalidad || ''}`;
-  // descripción más extensa — intenta buscar job.descripcionLarga o fallback a job.descripcion
-  const longDescription = job.descripcionLarga || job.descripcion || job.descripcion_corta || job.resumen || '';
+  const idBase = job?.id ? `job-${job.id}` : `job-${Math.random().toString(36).slice(2, 9)}`
+  const title = String(job?.titulo || job?.title || 'Oferta sin título')
+  const company = String(job?.empresa || job?.company || job?.data?.empresa || '')
+  const longDescription = String(job?.descripcionLarga || job?.descripcion || job?.descripcion_corta || job?.resumen || '')
+  const tech = String(job?.data?.technology || job?.data?.tecnologias || '')
+  const mode = String(job?.data?.modalidad || job?.data?.location || '')
 
-  // para mostrar tecnologías: asumimos job.data.technology puede ser "javascript,react"
-  const tech = job.data?.technology || job.data?.tecnologias || ''
-
-  const handleApply = () => {
-    setApplied((v) => !v)
-  }
+  const handleApply = () => setApplied((v) => !v)
 
   return (
-    <article className="job-card" data-technology={tech} data-location={job.data?.modalidad} data-contract={job.data?.contrato} data-nivel={job.data?.nivel}>
+    <article
+      className="job-card"
+      data-technology={tech}
+      data-location={mode}
+      data-nivel={String(job?.data?.nivel || '')}
+      aria-labelledby={`${idBase}-title`}
+    >
       <div className="job-header">
-        <h3>{title}</h3>
+        <h3 id={`${idBase}-title`}>{title}</h3>
         <button
           className={`button-apply-job ${applied ? 'applied' : ''}`}
           onClick={handleApply}
           aria-pressed={applied}
+          aria-label={applied ? `Marcar como no aplicado a ${title}` : `Aplicar a ${title}`}
         >
           {applied ? 'Aplicado' : 'Aplicar'}
         </button>
       </div>
 
-      <h6 className="job-meta">{companyLine}</h6>
+      {company && <p className="job-meta">{company}</p>}
 
-      <p className="job-description">{longDescription}</p>
+      {tech && (
+        <p className="job-tech" aria-hidden="false">
+          <strong>Tecnologías:</strong> {tech}
+        </p>
+      )}
+
+      {longDescription ? (
+        <p className="job-description">{longDescription}</p>
+      ) : (
+        <p className="job-description muted">Sin descripción disponible</p>
+      )}
     </article>
   )
 }

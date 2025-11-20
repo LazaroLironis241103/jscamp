@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { SearchForm } from './components/SearchForm'
@@ -14,6 +14,8 @@ function App() {
     technology: '',
     location: '',
     experienceLevel: '',
+    salary: '',
+    contractType: '',
   })
 
   const [textToFilter, setTextToFilter] = useState('')
@@ -21,11 +23,13 @@ function App() {
 
   const handleSearch = (newFilters) => {
     setFilters({
-      technology: newFilters.technology,
-      location: newFilters.location,
-      experienceLevel: newFilters.experienceLevel,
+      technology: newFilters.technology || '',
+      location: newFilters.location || '',
+      experienceLevel: newFilters.experienceLevel || '',
+      salary: newFilters.salary || '',
+      contractType: newFilters.contractType || '',
     })
-    setTextToFilter(newFilters.search)
+    setTextToFilter(newFilters.search || '')
     setCurrentPage(1)
   }
 
@@ -34,47 +38,94 @@ function App() {
     setCurrentPage(1)
   }
 
+  const handleReset = () => {
+    setFilters({
+      technology: '',
+      location: '',
+      experienceLevel: '',
+      salary: '',
+      contractType: '',
+    })
+    setTextToFilter('')
+    setCurrentPage(1)
+  }
+
   const handlePageChange = (page) => {
     setCurrentPage(page)
   }
 
-  const jobsFilteredByFilters = jobsData.filter((job) => {
-  // normalizamos valores a minúsculas para comparar
-  const jobTechString = (job.data?.technology || job.data?.tecnologias || '').toString().toLowerCase()
-  const jobMode = (job.data?.modalidad || job.data?.location || '').toString().toLowerCase()
-  const jobNivel = (job.data?.nivel || '').toString().toLowerCase()
+  const normalize = (value) => (value ?? '').toString().toLowerCase()
 
-  const techMatch = !filters.technology || jobTechString.split(',').map(s => s.trim()).includes(filters.technology.toLowerCase())
-  const locationMatch = !filters.location || jobMode.includes(filters.location.toLowerCase())
-  const nivelMatch = !filters.experienceLevel || jobNivel.includes(filters.experienceLevel.toLowerCase())
+  const jobsFilteredByFilters = useMemo(() => {
+    const techFilter = (filters.technology || '').toLowerCase()
+    const locFilter = (filters.location || '').toLowerCase()
+    const nivelFilter = (filters.experienceLevel || '').toLowerCase()
+    const salaryFilter = filters.salary ? parseInt(filters.salary, 10) : 0
+    const contractFilter = (filters.contractType || '').toLowerCase()
 
-  return techMatch && locationMatch && nivelMatch
-})
+    return jobsData.filter((job) => {
+      const jobTechString = normalize(job.data?.technology || job.data?.tecnologias)
+      const jobMode = normalize(job.data?.modalidad || job.data?.location)
+      const jobNivel = normalize(job.data?.nivel)
+      const jobSalary = parseInt(job.data?.salary || job.data?.salario || 0, 10) || 0
+      const jobContract = normalize(job.data?.contractType || job.data?.contrato || '')
 
+      const techMatch =
+        !techFilter ||
+        jobTechString.split(',').map((s) => s.trim()).includes(techFilter)
+      const locationMatch = !locFilter || jobMode.includes(locFilter)
+      const nivelMatch = !nivelFilter || jobNivel.includes(nivelFilter)
+      const salaryMatch = !salaryFilter || jobSalary >= salaryFilter
+      const contractMatch = !contractFilter || jobContract === contractFilter
 
-  // Filtrar por texto
-  const jobsWithTextFilter =
-    textToFilter === ''
-      ? jobsFilteredByFilters
-      : jobsFilteredByFilters.filter((job) =>
-          job.titulo.toLowerCase().includes(textToFilter.toLowerCase())
-        )
+      return techMatch && locationMatch && nivelMatch && salaryMatch && contractMatch
+    })
+  }, [filters])
 
-  // Paginación
-  const totalPages = Math.max(1, Math.ceil(jobsWithTextFilter.length / RESULTS_PER_PAGE))
+  const jobsWithTextFilter = useMemo(() => {
+    if (!textToFilter) return jobsFilteredByFilters
+    const q = textToFilter.toLowerCase()
+    return jobsFilteredByFilters.filter((job) => {
+      const title = normalize(job.titulo)
+      const description = normalize(job.descripcion)
+      const company = normalize(job.empresa || job.company)
+      return title.includes(q) || description.includes(q) || company.includes(q)
+    })
+  }, [jobsFilteredByFilters, textToFilter])
 
-  const pagedResults = jobsWithTextFilter.slice(
-    (currentPage - 1) * RESULTS_PER_PAGE,
-    currentPage * RESULTS_PER_PAGE
-  )
+  const totalResults = jobsWithTextFilter.length
+  const totalPages = Math.max(1, Math.ceil(totalResults / RESULTS_PER_PAGE))
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1)
+    }
+  }, [currentPage, totalPages])
+
+  const pagedResults = useMemo(() => {
+    const start = (currentPage - 1) * RESULTS_PER_PAGE
+    const end = currentPage * RESULTS_PER_PAGE
+    return jobsWithTextFilter.slice(start, end)
+  }, [jobsWithTextFilter, currentPage])
 
   return (
     <>
       <Header />
       <main className="layout">
         <section>
-          <SearchForm onSearch={handleSearch} onChangeText={handleChangeText} />
+          <SearchForm onSearch={handleSearch} onChangeText={handleChangeText} onReset={handleReset} />
         </section>
+
+        <div className="results-summary" aria-live="polite">
+          <p>
+            Se encontraron <strong>{totalResults}</strong> trabajos{' '}
+            {textToFilter && (
+              <>
+                para "<em>{textToFilter}</em>"
+              </>
+            )}
+          </p>
+        </div>
 
         <JobListings jobs={pagedResults} />
 
